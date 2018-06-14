@@ -34,7 +34,7 @@ class MyPolygonAnnotation: MGLPolygon
 
 class TracingViewController: UIViewController  ,MGLMapViewDelegate , RequestsGenericDelegate , dragaableAnnotationDelegate , UIGestureRecognizerDelegate , ReachabilityDelegate
 {
-   
+    
     
     @IBOutlet weak var mapView: UIView!
     @IBOutlet weak var tracingOptionsSelectionView: UIView!
@@ -73,7 +73,7 @@ class TracingViewController: UIViewController  ,MGLMapViewDelegate , RequestsGen
     
     @IBOutlet weak var locked_imageView_constraint: NSLayoutConstraint!
     
-    var map:MGLMapView!
+    var map: MGLMapView!
     
     var pathsList = [CircuitPath] ()
     var pathIdentifierList:[Int:Bool] = [Int:Bool]()
@@ -85,7 +85,6 @@ class TracingViewController: UIViewController  ,MGLMapViewDelegate , RequestsGen
     var WPId:Int! = 0
     var WorkAssignmentId:Int! = 0
     var crewArray:[[String:Any]] = [[String:Any]]()
-    var notesList:[NoteModel] = [NoteModel]()
     
     var coordinateList:[CLLocationCoordinate2D] = [CLLocationCoordinate2D]()
     var polygonPoints:[CLLocationCoordinate2D] = [CLLocationCoordinate2D]()
@@ -95,14 +94,14 @@ class TracingViewController: UIViewController  ,MGLMapViewDelegate , RequestsGen
     var polygonAnnotationsList:[MGLAnnotation] = [MGLAnnotation]()
     var polygonAnnotationIdCounter:Int = 0
     var polygonLineIdCounter:Int = 0
-
+    
     var polygonPointsCounter:Int = 0
     var polygonLinesList:[CustomPolyline] = [CustomPolyline]()
     
     var loadingNotif:MBProgressHUD?
     var isAllPathMode:Bool = false
     var noTrace:Bool = true
-
+    
     //Trace finger stuff
     static public var isLocked = false
     var isDraggableAnnotationAdded:Bool = false
@@ -114,9 +113,11 @@ class TracingViewController: UIViewController  ,MGLMapViewDelegate , RequestsGen
     var isPolygonBeingDrawn:Bool = false
     var isTracingBeingDrawn:Bool = false
     
+    var notesList:[NoteModel] = [NoteModel]()
+
     var isNetworkAvailable:Bool = true
     var reachabilityManager:ReachabilityManager?
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -125,12 +126,12 @@ class TracingViewController: UIViewController  ,MGLMapViewDelegate , RequestsGen
         print(" \(Constants.TAG) fullCircuitObj \(circuitFullObj.count)")
         print(" \(Constants.TAG) notes list size \(notesList.count)")
 
-
+        
         reachabilityManager = ReachabilityManager(delegate: self)
-
+        
         TracingViewController.isLocked = false
         
-      //  let FinishButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(tapnavigationbarButon))
+        //  let FinishButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(tapnavigationbarButon))
         
         let FinishButton = UIBarButtonItem(title: "Finish", style: .plain, target: self, action: #selector(tapnavigationbarButon))
         self.navigationItem.rightBarButtonItem = FinishButton
@@ -148,24 +149,7 @@ class TracingViewController: UIViewController  ,MGLMapViewDelegate , RequestsGen
         btn_start_done_polygon.imageEdgeInsets = UIEdgeInsetsMake(0, 15, 0, 15)
         
         
-        map = MGLMapView(frame: view.bounds, styleURL: MGLStyle.streetsStyleURL(withVersion: 9))
-        map.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        map.tintColor = .gray
-        map.delegate = self
-        self.view.addSubview(map)
-        
-        let singleTap = UITapGestureRecognizer(target: self, action: #selector(handleSingleTap(tap:)))
-        singleTap.delegate = self
-        
-        //  map?.addGestureRecognizer(singleTap)
-        map?.isUserInteractionEnabled = true
-        
-        
-        let marker1 = MGLPointAnnotation.drawMarker(at: CLLocationCoordinate2D(latitude: 33.676521, longitude: 73.030338), title: "intersecting point")
-        marker1.subtitle = "dsfdhfkldhfkjldfhd"
-        map.addAnnotation(marker1)
-        
-      //   initMap()
+        initMap()
         
     }
     
@@ -174,88 +158,34 @@ class TracingViewController: UIViewController  ,MGLMapViewDelegate , RequestsGen
         reachabilityManager?.startMonitoring()
         
         self.isAllPathMode = false
-//        self.noTrace = false
+        //        self.noTrace = false
     }
     
     func initMap()
     {
+        
         map = MGLMapView(frame: mapView.bounds, styleURL: MGLStyle.streetsStyleURL(withVersion: 9))
         map!.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         map!.tintColor = UIColor.gray
         map!.delegate = self
         mapView.addSubview(map!)
-        
+
         let singleTap = UITapGestureRecognizer(target: self, action: #selector(handleSingleTap(tap:)))
-        singleTap.delegate = self
-        
-//        for recognizer in (map?.gestureRecognizers!)! where recognizer is UITapGestureRecognizer {
-//            singleTap.require(toFail: recognizer)
-//        }
-        
-      //  map?.addGestureRecognizer(singleTap)
-        map.isUserInteractionEnabled = true
-        
-        let coordinate = CLLocationCoordinate2D(latitude: 33.677969, longitude: 73.030397)
-        let marker = MGLPointAnnotation.drawMarker(at:coordinate , title: "intersecting point")
-        marker.subtitle = "dsfdhfkldhfkjldfhd"
-      //  map?.addAnnotation(marker)
-        
-      //  map.selectAnnotation(marker, animated: false)
         
         
+                singleTap.delegate = self
+//                for recognizer in (map?.gestureRecognizers!)! where recognizer is UITapGestureRecognizer {
+//                    singleTap.require(toFail: recognizer)
+//                }
+        
+        map?.addGestureRecognizer(singleTap)
+        map?.isUserInteractionEnabled = true
+
         let marker1 = MGLPointAnnotation.drawMarker(at: CLLocationCoordinate2D(latitude: 33.676521, longitude: 73.030338), title: "intersecting point")
-        marker.subtitle = "dsfdhfkldhfkjldfhd"
+        marker1.subtitle = "dsfdhfkldhfkjldfhd"
         map?.addAnnotation(marker1)
-        
-      //  drawNotesMarkers()
-        
-      //  getAllPathsList()
-    }
-    
-    @objc func handleSingleTap(tap: UITapGestureRecognizer)
-    {
-        print("@@@@@@")
-        
-        if(isPolygonStarted)
-        {
-            print("tapped on map")
-            
-            var tapPoint: CGPoint = tap.location(in: self.view)
-            let tapCoordinate: CLLocationCoordinate2D = map!.convert(tapPoint, toCoordinateFrom: self.view)
-            print("You tapped at: \(tapCoordinate.latitude), \(tapCoordinate.longitude)")
-            
-            if(checkIntersection(q2: tapCoordinate))
-            {
-                print("Intersection")
-                showErrorDialog(withMessage: "Invalid point.", goBack: false)
-                return
-            }
-            
-            self.isPolygonBeingDrawn = true
-            
-            polygonAnnotationIdCounter = polygonAnnotationIdCounter + 1
-            polygonPointsCounter = polygonPointsCounter + 1
-            
-          //  var tapPoint: CGPoint = tap.location(in: map)
-            
-            
-             btn_undo_polygon.isHidden = false
-            self.undo_image_view.isHidden = false
-            
-           let point = MyCustomPointAnnotation()
-            point.title = Constants.annotation_polygon_dot
-            point.coordinate = tapCoordinate
-            point.willUseImage = true
-            point.annotationID = polygonAnnotationIdCounter
-            map?.addAnnotation(point)
-            
-            polygonPoints.append(tapCoordinate)
-            
-            if(polygonPoints.count > 1)
-            {
-                self.drawPolyLine()
-            }
-        }
+
+        drawNotesMarkers()
     }
     
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer,
@@ -265,9 +195,59 @@ class TracingViewController: UIViewController  ,MGLMapViewDelegate , RequestsGen
         return true
     }
     
-    func mapView(_ mapView: MGLMapView, didSelect annotation: MGLAnnotation) {
-        print("@@@didSelect annotation@@")
+//    @objc func handleSingleTap(tap: UITapGestureRecognizer)
+//    {
+//        print("@@@@@@")
+//    }
+    
+    @objc func handleSingleTap(tap: UITapGestureRecognizer)
+    {
+        print("@@@@@@")
+
+        if(isPolygonStarted)
+        {
+            print("tapped on map")
+
+            var tapPoint: CGPoint = tap.location(in: self.view)
+            let tapCoordinate: CLLocationCoordinate2D = map!.convert(tapPoint, toCoordinateFrom: self.view)
+            print("You tapped at: \(tapCoordinate.latitude), \(tapCoordinate.longitude)")
+
+            if(checkIntersection(q2: tapCoordinate))
+            {
+                print("Intersection")
+                showErrorDialog(withMessage: "Invalid point.", goBack: false)
+                return
+            }
+
+            self.isPolygonBeingDrawn = true
+
+            polygonAnnotationIdCounter = polygonAnnotationIdCounter + 1
+            polygonPointsCounter = polygonPointsCounter + 1
+
+            //  var tapPoint: CGPoint = tap.location(in: map)
+
+
+            btn_undo_polygon.isHidden = false
+            self.undo_image_view.isHidden = false
+
+            let point = MyCustomPointAnnotation()
+            point.title = Constants.annotation_polygon_dot
+            point.coordinate = tapCoordinate
+            point.willUseImage = true
+            point.annotationID = polygonAnnotationIdCounter
+            map?.addAnnotation(point)
+
+            polygonPoints.append(tapCoordinate)
+
+            if(polygonPoints.count > 1)
+            {
+                self.drawPolyLine()
+            }
+        }
     }
+
+    
+    
     
     @IBAction func btnUndoPolygonPressed(_ sender: Any)
     {
@@ -300,10 +280,10 @@ class TracingViewController: UIViewController  ,MGLMapViewDelegate , RequestsGen
                         self.isPolygonBeingDrawn = false
                         self.btn_start_done_polygon.setTitle("Start", for: UIControlState.normal)
                         isPolygonStarted = false
-
+                        
                         // polygonAnnotationIdCounter = 0
                         polygonPoints = [CLLocationCoordinate2D]()
-
+                        
                         for annotation in annotationsList
                         {
                             let ann = annotation as? MyCustomPointAnnotation
@@ -318,7 +298,7 @@ class TracingViewController: UIViewController  ,MGLMapViewDelegate , RequestsGen
                         }
                         
                     }
-
+                    
                     if(polygonpointsCount == 1)
                     {
                         self.btn_undo_polygon.isHidden = true
@@ -326,17 +306,17 @@ class TracingViewController: UIViewController  ,MGLMapViewDelegate , RequestsGen
                         self.isPolygonBeingDrawn = false
                         self.btn_start_done_polygon.setTitle("Start", for: UIControlState.normal)
                         isPolygonStarted = false
-
+                        
                         // polygonAnnotationIdCounter = 0
                         polygonPoints = [CLLocationCoordinate2D]()
                     }
                     break
                 }
-               
+                
             }
             
             let lineAnn = annotation as? CustomPolygonPolyline
-
+            
             if(lineAnn?.title != nil && lineAnn?.title! == Constants.annotation_polygon_line)
             {
                 if(lineAnn?.lineID == polygonLineIdCounter)
@@ -350,6 +330,7 @@ class TracingViewController: UIViewController  ,MGLMapViewDelegate , RequestsGen
             }
         }
     }
+
     
     //MARK: Mapbox delegate functions
     func mapViewDidFinishLoadingMap(_ mapView: MGLMapView)
@@ -364,76 +345,86 @@ class TracingViewController: UIViewController  ,MGLMapViewDelegate , RequestsGen
         // Request.getCircuits(delegate: self , WPId: 8)
     }
     
-    func mapView(_ mapView: MGLMapView, strokeColorForShapeAnnotation annotation: MGLShape) -> UIColor {
-        if let polyline:CustomPolyline = annotation as? CustomPolyline {
-            return polyline.color ?? mapView.tintColor
+//    func mapView(_ mapView: MGLMapView, strokeColorForShapeAnnotation annotation: MGLShape) -> UIColor {
+//        if let polyline:CustomPolyline = annotation as? CustomPolyline {
+//            return polyline.color ?? mapView.tintColor
+//        }
+//        return mapView.tintColor
+//    }
+//
+//    func mapView(_ mapView: MGLMapView, annotationCanShowCallout annotation: MGLAnnotation) -> Bool {
+//        return true
+//    }
+//
+//    func mapView(_ mapView: MGLMapView, didSelect annotation: MGLAnnotation) {
+//        print("@@@didSelect annotation@@")
+//    }
+//
+//    func mapView(_ mapView: MGLMapView, didSelect annotationView: MGLAnnotationView) {
+//        print("@@@didSelect annotationView")
+//    }
+//
+    func mapView(_ mapView: MGLMapView, imageFor annotation: MGLAnnotation) -> MGLAnnotationImage?
+    {
+
+        if let castAnnotation = annotation as? MyCustomPointAnnotation {
+            if (!castAnnotation.willUseImage) {
+                return nil;
+            }
         }
-        return mapView.tintColor
+
+        if let annotation:MGLAnnotation = annotation
+        {
+            if(annotation.title != nil && annotation.title! == Constants.annotation_polygon_dot)
+            {
+                var annotationImage = mapView.dequeueReusableAnnotationImage(withIdentifier: "pisa")
+
+                if annotationImage == nil
+                {
+                    // Leaning Tower of Pisa by Stefan Spieler from the Noun Project.
+                    var image = UIImage(named: "gree_dot_small")!
+
+                    // The anchor point of an annotation is currently always the center. To
+                    // shift the anchor point to the bottom of the annotation, the image
+                    // asset includes transparent bottom padding equal to the original image
+                    // height.
+                    //
+                    // To make this padding non-interactive, we create another image object
+                    // with a custom alignment rect that excludes the padding.
+                    image = image.withAlignmentRectInsets(UIEdgeInsets(top: 0, left: 0, bottom: image.size.height/2, right: 0))
+
+                    // Initialize the ‘pisa’ annotation image with the UIImage we just loaded.
+                    annotationImage = MGLAnnotationImage(image: image, reuseIdentifier: "pisa")
+                }
+                return annotationImage
+            }
+            else
+            {
+
+                var annotationImage = mapView.dequeueReusableAnnotationImage(withIdentifier: "default")
+
+                if annotationImage == nil {
+                    var image = UIImage(named: "gree_dot_small")!
+
+                    image = image.withAlignmentRectInsets(UIEdgeInsets(top: 0, left: 0, bottom: image.size.height/2, right: 0))
+                    annotationImage = MGLAnnotationImage(image: image, reuseIdentifier: "default")
+                }
+                return annotationImage
+            }
+            // return annotationImage
+        }
+
     }
     
-//    func mapView(_ mapView: MGLMapView, imageFor annotation: MGLAnnotation) -> MGLAnnotationImage?
-//    {
-//
-//        if let castAnnotation = annotation as? MyCustomPointAnnotation {
-//            if (!castAnnotation.willUseImage) {
-//                return nil;
-//            }
-//        }
-//
-//        if let annotation:MGLAnnotation = annotation
-//        {
-//            if(annotation.title != nil && annotation.title! == Constants.annotation_polygon_dot)
-//            {
-//                var annotationImage = mapView.dequeueReusableAnnotationImage(withIdentifier: "pisa")
-//
-//                if annotationImage == nil
-//                {
-//                    // Leaning Tower of Pisa by Stefan Spieler from the Noun Project.
-//                    var image = UIImage(named: "gree_dot_small")!
-//
-//                    // The anchor point of an annotation is currently always the center. To
-//                    // shift the anchor point to the bottom of the annotation, the image
-//                    // asset includes transparent bottom padding equal to the original image
-//                    // height.
-//                    //
-//                    // To make this padding non-interactive, we create another image object
-//                    // with a custom alignment rect that excludes the padding.
-//                    image = image.withAlignmentRectInsets(UIEdgeInsets(top: 0, left: 0, bottom: image.size.height/2, right: 0))
-//
-//                    // Initialize the ‘pisa’ annotation image with the UIImage we just loaded.
-//                    annotationImage = MGLAnnotationImage(image: image, reuseIdentifier: "pisa")
-//                }
-//                return annotationImage
-//            }
-//            else if(annotation.title != nil && annotation.title! == Constants.noteMarker)
-//            {
-//                var annotationImage = mapView.dequeueReusableAnnotationImage(withIdentifier: "done_ic")
-//
-//                if annotationImage == nil {
-//                    var image = UIImage(named: "done_ic")!
-//
-//                    image = image.withAlignmentRectInsets(UIEdgeInsets(top: 0, left: 0, bottom: image.size.height/2, right: 0))
-//                    annotationImage = MGLAnnotationImage(image: image, reuseIdentifier: "done_ic")
-//                }
-//                return annotationImage
-//            }
-//            else
-//            {
-//
-//                var annotationImage = mapView.dequeueReusableAnnotationImage(withIdentifier: "default")
-//
-//                if annotationImage == nil {
-//                    var image = UIImage(named: "gree_dot_small")!
-//
-//                    image = image.withAlignmentRectInsets(UIEdgeInsets(top: 0, left: 0, bottom: image.size.height/2, right: 0))
-//                    annotationImage = MGLAnnotationImage(image: image, reuseIdentifier: "default")
-//                }
-//                return annotationImage
-//            }
-//           // return annotationImage
-//        }
-//
-//    }
+    //    func mapView(_ mapView: MGLMapView, didSelect annotation: MGLAnnotation)
+    //    {
+    //        print("&&&&&&&&&&&&&&&&&&&&&&&&&&")
+    //
+    ////        var tapPoint: CGPoint = tap.location(in: self.view)
+    ////        let tapCoordinate: CLLocationCoordinate2D = map!.convert(tapPoint, toCoordinateFrom: self.view)
+    ////        print("You tapped at: \(tapCoordinate.latitude), \(tapCoordinate.longitude)")
+    //    }
+    
     
     func mapView(_ mapView: MGLMapView, alphaForShapeAnnotation annotation: MGLShape) -> CGFloat
     {
@@ -441,31 +432,31 @@ class TracingViewController: UIViewController  ,MGLMapViewDelegate , RequestsGen
         // return 1.0
     }
     
-    func mapView(_ mapView: MGLMapView, fillColorForPolygonAnnotation annotation: MGLPolygon) -> UIColor {
-        return UIColor(red: 59/255, green: 178/255, blue: 208/255, alpha: 1)
-    }
+        func mapView(_ mapView: MGLMapView, fillColorForPolygonAnnotation annotation: MGLPolygon) -> UIColor {
+            return UIColor(red: 59/255, green: 178/255, blue: 208/255, alpha: 1)
+        }
     
-//    func mapView(_ mapView: MGLMapView, viewFor annotation: MGLAnnotation) -> MGLAnnotationView?
-//    {
-//
-//        if let castAnnotation = annotation as? MyCustomPointAnnotation {
-//            if (castAnnotation.willUseImage) {
-//                return nil;
-//            }
-//        }
-//
-//        // For better performance, always try to reuse existing annotations. To use multiple different annotation views, change the reuse identifier for each.
-//        if let annotationView:DraggableAnnotationView = mapView.dequeueReusableAnnotationView(withIdentifier: "draggablePoint") as? DraggableAnnotationView {
-//            annotationView.mapView = mapView
-//            self.draggablePoint = annotationView
-//            return annotationView
-//        } else {
-//            let annotationView:DraggableAnnotationView = DraggableAnnotationView(reuseIdentifier: "draggablePoint", size: 50 , delegate:self)
-//            annotationView.mapView = mapView
-//            self.draggablePoint = annotationView
-//            return annotationView
-//        }
-//    }
+        func mapView(_ mapView: MGLMapView, viewFor annotation: MGLAnnotation) -> MGLAnnotationView?
+        {
+    
+            if let castAnnotation = annotation as? MyCustomPointAnnotation {
+                if (castAnnotation.willUseImage) {
+                    return nil;
+                }
+            }
+    
+            // For better performance, always try to reuse existing annotations. To use multiple different annotation views, change the reuse identifier for each.
+            if let annotationView:DraggableAnnotationView = mapView.dequeueReusableAnnotationView(withIdentifier: "draggablePoint") as? DraggableAnnotationView {
+                annotationView.mapView = mapView
+                self.draggablePoint = annotationView
+                return annotationView
+            } else {
+                let annotationView:DraggableAnnotationView = DraggableAnnotationView(reuseIdentifier: "draggablePoint", size: 50 , delegate:self)
+                annotationView.mapView = mapView
+                self.draggablePoint = annotationView
+                return annotationView
+            }
+        }
     
     
     
@@ -476,15 +467,30 @@ class TracingViewController: UIViewController  ,MGLMapViewDelegate , RequestsGen
     }
     
     
+    ///////////////////////////
     
-//    func mapView(_ mapView: MGLMapView, didSelect annotation: MGLAnnotation)
-//    {
-//        print("&&&&&&&&&&&&&&&&&&&&&&&&&&")
-//
-////        var tapPoint: CGPoint = tap.location(in: self.view)
-////        let tapCoordinate: CLLocationCoordinate2D = map!.convert(tapPoint, toCoordinateFrom: self.view)
-////        print("You tapped at: \(tapCoordinate.latitude), \(tapCoordinate.longitude)")
+    func mapView(_ mapView: MGLMapView, didSelect annotation: MGLAnnotation) {
+        print("@@@didSelect annotation@@")
+    }
+    
+    func mapView(_ mapView: MGLMapView, didSelect annotationView: MGLAnnotationView) {
+        print("@@@didSelect annotationView")
+    }
+    
+//    func mapView(_ mapView: MGLMapView, alphaForShapeAnnotation annotation: MGLShape) -> CGFloat {
+//        return 0.5
 //    }
+    
+    func mapView(_ mapView: MGLMapView, strokeColorForShapeAnnotation annotation: MGLShape) -> UIColor {
+        if let annotation = annotation as? CustomPolyline{
+            return annotation.color ?? UIColor.black
+        }
+        return mapView.tintColor
+    }
+    
+    func mapView(_ mapView: MGLMapView, annotationCanShowCallout annotation: MGLAnnotation) -> Bool {
+        return true
+    }
     
     
     func fixateCamera(){
@@ -723,7 +729,7 @@ class TracingViewController: UIViewController  ,MGLMapViewDelegate , RequestsGen
         
     }
     
-   
+    
     
     @IBAction func btnStartDonePolygonPressed(_ sender: Any)
     {
@@ -735,16 +741,15 @@ class TracingViewController: UIViewController  ,MGLMapViewDelegate , RequestsGen
             {
                 //self.btn_start_done_polygon.setImage(image, for: .normal)
                 self.start_polygon_image.image = image
-
+                
             }
             
             isPolygonStarted = true
             
             
-         //   polygonAnnotationIdCounter = 0
+            //   polygonAnnotationIdCounter = 0
             return
         }
-        
         
         let isValidPolygon = validatePolygon()
         
@@ -753,6 +758,7 @@ class TracingViewController: UIViewController  ,MGLMapViewDelegate , RequestsGen
             showErrorDialog(withMessage: "Polygon is not valid.", goBack: false)
             return
         }
+
         
         
         if(isPolygonStarted && polygonPoints.count > 2 && self.btn_start_done_polygon.currentTitle == "Done")
@@ -774,12 +780,12 @@ class TracingViewController: UIViewController  ,MGLMapViewDelegate , RequestsGen
             
             for annotation in (map?.annotations)!
             {
-            
+                
                 if (annotation.title != nil && annotation.title! == "polygon marker")
                 {
                     map?.removeAnnotation(annotation as! MGLAnnotation)
                 }
-            
+                
             }
             
             isPolygonStarted = false
@@ -791,7 +797,7 @@ class TracingViewController: UIViewController  ,MGLMapViewDelegate , RequestsGen
             
             self.btn_start_done_polygon.setTitle("Start", for: .normal)
             
-          //  polygonAnnotationIdCounter = 0
+            //  polygonAnnotationIdCounter = 0
             
         }
         else
@@ -802,57 +808,31 @@ class TracingViewController: UIViewController  ,MGLMapViewDelegate , RequestsGen
     }
     
     
-    func validatePolygon() -> Bool
-    {
-        let q:CLLocationCoordinate2D = getFirstPoint(point: self.polygonPoints[0])
-       // let q:CLLocationCoordinate2D = self.polygonPoints[0]
-        let q2:CLLocationCoordinate2D = self.polygonPoints[polygonPoints.count - 1]
-        
-        for (index , point) in self.polygonPoints.enumerated()
-        {
-            if(index < polygonPoints.count - 2)
-            {
-                let p:CLLocationCoordinate2D = polygonPoints[index]
-                let p2:CLLocationCoordinate2D = polygonPoints[index + 1]
-                
-                let isIntersect:Bool = Constants.doLineSegmentsIntersect(p: p, p2: p2, q: q, q2: q2)
-                print("isIntersect \(isIntersect)")
-                
-                if(isIntersect)
-                {
-                    return false
-                }
-            }
-        }
-        
-        return true
-    }
-    
     @IBAction func FinishButtonPressed(_ sender: Any)
     {
         
         
         print("\(Constants.TAG) tracedPathsList size \(tracedPathsList?.count)")
         
-//        if(draggablePoint?.myTracedPathsList != nil)
-//        {
-//            self.tracedPathsList = (draggablePoint?.myTracedPathsList)
-//
-//            if((tracedPathsList?.count)! > 0)
-//            {
-//                noTrace = false
-//            }
-//
-////            for path in (self.tracedPathsList)!
-////            {
-////                for coordinate in path
-////                {
-////                    print("\(Constants.TAG) path lat \(coordinate.latitude)")
-////                    print("\(Constants.TAG) path lng \(coordinate.longitude)")
-////                }
-////            }
-//        }
-//
+        //        if(draggablePoint?.myTracedPathsList != nil)
+        //        {
+        //            self.tracedPathsList = (draggablePoint?.myTracedPathsList)
+        //
+        //            if((tracedPathsList?.count)! > 0)
+        //            {
+        //                noTrace = false
+        //            }
+        //
+        ////            for path in (self.tracedPathsList)!
+        ////            {
+        ////                for coordinate in path
+        ////                {
+        ////                    print("\(Constants.TAG) path lat \(coordinate.latitude)")
+        ////                    print("\(Constants.TAG) path lng \(coordinate.longitude)")
+        ////                }
+        ////            }
+        //        }
+        //
     }
     
     
@@ -867,7 +847,7 @@ class TracingViewController: UIViewController  ,MGLMapViewDelegate , RequestsGen
             
             btn_lock_map.setTitle("Lock Map" , for: UIControlState.normal)
             self.locked_imageView_constraint.constant = -40
-
+            
         }
         else
         {
@@ -879,19 +859,19 @@ class TracingViewController: UIViewController  ,MGLMapViewDelegate , RequestsGen
                 
                 TracingViewController.isLocked = true
                 self.locked_imageView_constraint.constant = -30
-
                 
-
-                   // self.isDraggableAnnotationAdded = true
                 
-            
+                
+                // self.isDraggableAnnotationAdded = true
+                
+                
             }
             else
             {
                 print("zoom level is less than 13")
                 
                 showErrorDialog(withMessage: "Please increase zoom level and then trace.", goBack: false)
-
+                
             }
             
         }
@@ -924,7 +904,7 @@ class TracingViewController: UIViewController  ,MGLMapViewDelegate , RequestsGen
                 self.tracedPathsList?.append(path)
             }
             
-          //  self.tracedPathsList = (draggablePoint?.myTracedPathsList)
+            //  self.tracedPathsList = (draggablePoint?.myTracedPathsList)
             
             if((tracedPathsList?.count)! > 0)
             {
@@ -944,7 +924,7 @@ class TracingViewController: UIViewController  ,MGLMapViewDelegate , RequestsGen
     
     func drawDraggableAnnotation()
     {
-       
+        
         let point = MyCustomPointAnnotation()
         point.coordinate = centerCoordinate!
         point.title = Constants.annotation_dragable_view
@@ -1074,9 +1054,9 @@ class TracingViewController: UIViewController  ,MGLMapViewDelegate , RequestsGen
         
         print("tapnavigationbarButon")
         
-//        let circuitData = [
-//            Constants.WPId : self.WPId
-//        ]
+        //        let circuitData = [
+        //            Constants.WPId : self.WPId
+        //        ]
         
         if(self.isPolygonBeingDrawn == true)
         {
@@ -1104,7 +1084,7 @@ class TracingViewController: UIViewController  ,MGLMapViewDelegate , RequestsGen
         
         
         self.performSegue(withIdentifier: Constants.segueOpenAddHoursScreenIdentifier, sender: DataToPass)
-
+        
     }
     
     
@@ -1151,7 +1131,7 @@ class TracingViewController: UIViewController  ,MGLMapViewDelegate , RequestsGen
         }))
         
         present(confirmAlert, animated: true, completion: nil)
-
+        
     }
     
     func removePolygonPointsAnnotations()
@@ -1168,7 +1148,7 @@ class TracingViewController: UIViewController  ,MGLMapViewDelegate , RequestsGen
                 
                 print("\(Constants.TAG) Annotation ID \(ann?.annotationID)")
                 self.map?.removeAnnotation(annotation)
-                    
+                
                 self.isPolygonStarted = false
                 self.polygonPoints = [CLLocationCoordinate2D]()
                 self.polygonPointsCounter = 0
@@ -1176,14 +1156,14 @@ class TracingViewController: UIViewController  ,MGLMapViewDelegate , RequestsGen
             }
             
             
-           // let polygonAnn = annotation as? MGLPolygon
+            // let polygonAnn = annotation as? MGLPolygon
             
             if(annotation.title != nil && annotation.title! == Constants.annotation_polygon)
             {
                 self.map?.removeAnnotation(annotation)
             }
             
-           // let polygonLineAnn = annotation as? CustomPolyline
+            // let polygonLineAnn = annotation as? CustomPolyline
             
             if(annotation.title != nil && annotation.title! == Constants.annotation_polygon_line)
             {
@@ -1201,7 +1181,7 @@ class TracingViewController: UIViewController  ,MGLMapViewDelegate , RequestsGen
         isPolygonStarted = false
         self.polygonsList = [[CLLocationCoordinate2D]]()
         self.tracedPathsList = [[CLLocationCoordinate2D]]()
-
+        
     }
     
     func showDiscardChangesDialog()
@@ -1231,7 +1211,7 @@ class TracingViewController: UIViewController  ,MGLMapViewDelegate , RequestsGen
         
         
         present(confirmAlert, animated: true, completion: nil)
-
+        
     }
     
     func drawPolyLine()
@@ -1246,7 +1226,7 @@ class TracingViewController: UIViewController  ,MGLMapViewDelegate , RequestsGen
         linePoints.append(fPoint)
         linePoints.append(lPoint)
         
-       
+        
         let polyline:CustomPolygonPolyline = CustomPolygonPolyline.drawPolyline(through: linePoints, color: UIColor.green)
         polyline.title = Constants.annotation_polygon_line
         polyline.lineID = polygonLineIdCounter
@@ -1272,6 +1252,52 @@ class TracingViewController: UIViewController  ,MGLMapViewDelegate , RequestsGen
         isNetworkAvailable = false
     }
     
+    func validatePolygon() -> Bool
+    {
+        let q:CLLocationCoordinate2D = getFirstPoint(point: self.polygonPoints[0])
+        // let q:CLLocationCoordinate2D = self.polygonPoints[0]
+        let q2:CLLocationCoordinate2D = self.polygonPoints[polygonPoints.count - 1]
+        
+        for (index , point) in self.polygonPoints.enumerated()
+        {
+            if(index < polygonPoints.count - 2)
+            {
+                let p:CLLocationCoordinate2D = polygonPoints[index]
+                let p2:CLLocationCoordinate2D = polygonPoints[index + 1]
+                
+                let isIntersect:Bool = Constants.doLineSegmentsIntersect(p: p, p2: p2, q: q, q2: q2)
+                print("isIntersect \(isIntersect)")
+                
+                if(isIntersect)
+                {
+                    return false
+                }
+            }
+        }
+        
+        return true
+    }
+    
+    func getFirstPoint(point:CLLocationCoordinate2D) -> CLLocationCoordinate2D
+    {
+        let lat:Double = point.latitude
+        let lng:Double = point.longitude
+        
+        let beforeStr = String(lat)
+        var charArray = Array(beforeStr)
+        
+        charArray[charArray.count - 1] = "4"
+        let afterStr = String(charArray)
+        
+        let after:Double = Double(afterStr)!
+        
+        var fPoint:CLLocationCoordinate2D = CLLocationCoordinate2D()
+        fPoint.latitude = after
+        fPoint.longitude = lng
+        
+        return fPoint
+    }
+    
     func checkIntersection(q2:CLLocationCoordinate2D) -> Bool
     {
         if(self.polygonPoints.count >= 3)
@@ -1295,31 +1321,11 @@ class TracingViewController: UIViewController  ,MGLMapViewDelegate , RequestsGen
                         return true
                     }
                 }
-               
+                
             }
         }
         
         return false
-    }
-    
-    func getFirstPoint(point:CLLocationCoordinate2D) -> CLLocationCoordinate2D
-    {
-        let lat:Double = point.latitude
-        let lng:Double = point.longitude
-        
-        let beforeStr = String(lat)
-        var charArray = Array(beforeStr)
-        
-        charArray[charArray.count - 1] = "4"
-        let afterStr = String(charArray)
-        
-        let after:Double = Double(afterStr)!
-        
-        var fPoint:CLLocationCoordinate2D = CLLocationCoordinate2D()
-        fPoint.latitude = after
-        fPoint.longitude = lng
-
-        return fPoint
     }
     
     func drawNotesMarkers()
@@ -1332,36 +1338,18 @@ class TracingViewController: UIViewController  ,MGLMapViewDelegate , RequestsGen
             
             let note_marker = MyCustomPointAnnotation()
             note_marker.title = Constants.noteMarker
-            note_marker.subtitle = "fhdsjkfdsfjkdsf dsfgdhsjkdsg dsghdklsg gdklgjdskl dsgdjksgkdsg dsgkljdsklg dgk"
+            note_marker.subtitle = note.text
             note_marker.coordinate = coordinate
             note_marker.willUseImage = true
             map?.addAnnotation(note_marker)
             
-           // map?.showAnnotations((map?.annotations)!, animated: true)
-           // map?.selectAnnotation(note_marker, animated: true)
+            // map?.showAnnotations((map?.annotations)!, animated: true)
+            // map?.selectAnnotation(note_marker, animated: true)
             
         }
     }
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

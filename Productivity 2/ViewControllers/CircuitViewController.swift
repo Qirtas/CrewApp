@@ -429,8 +429,8 @@ RequestsGenericDelegate , ReachabilityDelegate
     
     func onSuccessResponse(data: Any)
     {
-//        let responseData = String(data: data as! Data , encoding: String.Encoding.utf8)
-//         print("onSuccessResponse \(data)")
+       // let responseData = String(data: data as! Data , encoding: String.Encoding.utf8)
+        // print("onSuccessResponse \(data)")
         
        // let crews = data["Crews"]
         
@@ -522,15 +522,15 @@ RequestsGenericDelegate , ReachabilityDelegate
                     donePathList.append(lineModel)
                 }
                 
+                var notesList:[NoteModel] = [NoteModel]()
+                
                 //Survey data
                 let surveyData = circuit["SurveyData"] as? [String:Any]
                 print("surveyData \(surveyData)")
-                
+
                 let notesArray =  surveyData!["Notes"] as! [[String : Any]]
                 print("notesArray size \(notesArray.count)")
-                
-                var notesList:[NoteModel] = [NoteModel]()
-                
+
                 for note in notesArray
                 {
                     let id = note["Id"] as! Int
@@ -540,7 +540,7 @@ RequestsGenericDelegate , ReachabilityDelegate
                     let lName = note["LastName"] as! String
                     let lat = note["lat"] as! Double
                     let lng = note["lng"] as! Double
-                    
+
                     let noteModel = NoteModel(id: id as! Int, text: text as! String, time: time, fName: fName, lName: lName, lat: lat, lng: lng)
                     notesList.append(noteModel)
                 }

@@ -57,7 +57,7 @@ public class Constants{
     static public var isCrewOpned = false
     static public var isHoursFieldActive = false
 
-    static public var UserID = 1
+    static public var UserID = 14
 
     static public let WorkAssignmentId = "workAssignmentId"
 

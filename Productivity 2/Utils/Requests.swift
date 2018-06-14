@@ -15,7 +15,7 @@ protocol RequestsGenericDelegate:class{
 
 public class Request
 {
-    public static let BASE_URL = "http://apabackendrevamp.mybluemix.net/"
+    public static let BASE_URL = "https://vpa-test-backend.mybluemix.net/"
     
     //https://vpa-test-backend.mybluemix.net/
     //http://apabackendrevamp.mybluemix.net/
@@ -28,6 +28,7 @@ public class Request
     class func getWorkPlans(delegate:RequestsGenericDelegate)
     {
         guard let url = URL(string: BASE_URL + WORKPLANS_URL) else {return}
+        print("getWorkPlans URL: \(url)")
         
         let session = URLSession.shared
        

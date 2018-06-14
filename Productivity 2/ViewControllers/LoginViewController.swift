@@ -92,10 +92,10 @@ class LoginViewController: UIViewController , RequestsGenericDelegate , Reachabi
         PostDictionary["password"] = password
         
         return PostDictionary
-        
     }
     
-    func showLoading(){
+    func showLoading()
+    {
         loadingNotif = MBProgressHUD.showAdded(to: view, animated: true)
         loadingNotif.mode = MBProgressHUDMode.indeterminate
         loadingNotif.label.text = "Processing"
@@ -149,11 +149,10 @@ class LoginViewController: UIViewController , RequestsGenericDelegate , Reachabi
                 {
                     let userID = user["Id"] as! Int
                     self.userID = userID
-                    Constants.UserID = userID
+                    Constants.UserID = 14
                 }
                 
             }
-            
             
             performSegue(withIdentifier: Constants.segueShowWorkPlansIdentifier, sender: nil)
 
