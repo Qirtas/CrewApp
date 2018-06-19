@@ -394,10 +394,23 @@ class TracingViewController: UIViewController  ,MGLMapViewDelegate , RequestsGen
                     image = image.withAlignmentRectInsets(UIEdgeInsets(top: 0, left: 0, bottom: image.size.height/2, right: 0))
 
                     // Initialize the ‘pisa’ annotation image with the UIImage we just loaded.
-                    annotationImage = MGLAnnotationImage(image: image, reuseIdentifier: "pisa")
+                    annotationImage = MGLAnnotationImage(image: image, reuseIdentifier: "gree_dot_small")
                 }
                 return annotationImage
             }
+            else if(annotation.title != nil && annotation.title! == Constants.noteMarker)
+            {
+                var annotationImage = mapView.dequeueReusableAnnotationImage(withIdentifier: "notes_marker")
+                
+                if annotationImage == nil {
+                    var image = UIImage(named: "notes_marker")!
+                    
+                    image = image.withAlignmentRectInsets(UIEdgeInsets(top: 0, left: 0, bottom: image.size.height/2, right: 0))
+                    annotationImage = MGLAnnotationImage(image: image, reuseIdentifier: "notes_marker")
+                }
+                return annotationImage
+            }
+                
             else
             {
 

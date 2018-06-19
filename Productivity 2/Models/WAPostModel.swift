@@ -20,8 +20,9 @@ class WAPostModel
     var polygons: [[CLLocationCoordinate2D]]
     var isTraceAll : Bool!
     var isNoTrace: Bool!
+    var LogDate: String!
     
-    init(GFId:Int , WPCId:Int , WAId: Int , note:String , crewInfo: [CrewInfoModel] , tracedPaths: [[CLLocationCoordinate2D]] , polygons:[[CLLocationCoordinate2D]] , isTraceAll:Bool , isNoTrace:Bool)
+    init(GFId:Int , WPCId:Int , WAId: Int , note:String , crewInfo: [CrewInfoModel] , tracedPaths: [[CLLocationCoordinate2D]] , polygons:[[CLLocationCoordinate2D]] , isTraceAll:Bool , isNoTrace:Bool , logDate:String)
     {
         self.GFId = GFId
         self.WPCircuitID = WPCId
@@ -32,6 +33,7 @@ class WAPostModel
         self.polygons = polygons
         self.isTraceAll = isTraceAll
         self.isNoTrace = isNoTrace
+        self.LogDate = logDate
         
     }
     
@@ -45,6 +47,7 @@ class WAPostModel
         WAPostDictionary["Note"] = note
         WAPostDictionary["WPCircuitId"] = WPCircuitID
         WAPostDictionary["WorkAssignmentId"] = WAId
+        WAPostDictionary["LogDate"] = LogDate
         
         var polygonsList = [[[String:Any]]]()
         

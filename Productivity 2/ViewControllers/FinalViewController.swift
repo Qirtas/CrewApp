@@ -94,7 +94,7 @@ class FinalViewController: UIViewController, MGLMapViewDelegate , UIPickerViewDe
             
             crewInfoList = getCrewInfoList()
             
-            waPostModel = WAPostModel(GFId: Constants.UserID, WPCId: self.WPCircuitID, WAId: self.WorkAssignmentId, note: enteredNote, crewInfo: self.crewInfoList, tracedPaths: self.tracedPathsList, polygons: self.polygonsList, isTraceAll: self.isAllPathMode, isNoTrace: self.isNoTrace)
+            waPostModel = WAPostModel(GFId: Constants.UserID, WPCId: self.WPCircuitID, WAId: self.WorkAssignmentId, note: enteredNote, crewInfo: self.crewInfoList, tracedPaths: self.tracedPathsList, polygons: self.polygonsList, isTraceAll: self.isAllPathMode, isNoTrace: self.isNoTrace , logDate: "")
             
             let WAPostDict = waPostModel.createJson()
             print("\(Constants.TAG) WAPostDict \(WAPostDict)")

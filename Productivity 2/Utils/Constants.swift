@@ -51,7 +51,7 @@ public class Constants{
     static public let notesList = "notesList"
 
     
-    static public let noteMarker = "note_marker"
+    static public let noteMarker = "Note"
 
 
     static public var isCrewOpned = false

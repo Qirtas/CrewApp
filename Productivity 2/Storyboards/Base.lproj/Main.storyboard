@@ -970,7 +970,7 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="v40-yB-5xJ">
-                                <rect key="frame" x="16" y="80" width="343" height="60"/>
+                                <rect key="frame" x="16" y="135" width="343" height="60"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aDQ-8D-Lmu">
                                         <rect key="frame" x="171" y="0.0" width="1" height="60"/>
@@ -1047,13 +1047,13 @@
                                 </constraints>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enter Crew Hours" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="h0d-Fw-ldQ">
-                                <rect key="frame" x="30" y="159" width="121" height="18"/>
+                                <rect key="frame" x="30" y="214" width="121" height="18"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <color key="textColor" red="0.094117647060000004" green="0.2156862745" blue="0.48627450979999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Sjw-Mt-qXf" customClass="TPKeyboardAvoidingTableView">
-                                <rect key="frame" x="16" y="185" width="343" height="381"/>
+                                <rect key="frame" x="16" y="240" width="343" height="326"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="addHoursCustomCell" rowHeight="134" id="nYF-yG-oGe" customClass="AddHoursCustomCell" customModule="Productivity_2" customModuleProvider="target">
@@ -1223,6 +1223,30 @@
                                     <action selector="addNewCrewButtonPressed:" destination="38W-S3-06f" eventType="touchUpInside" id="bLV-bs-kDS"/>
                                 </connections>
                             </button>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hxI-WF-Qz9" userLabel="selectDateView">
+                                <rect key="frame" x="16" y="73" width="343" height="54"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <subviews>
+                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" text="Select date:" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="diz-ug-Am2">
+                                        <rect key="frame" x="10" y="12" width="97" height="33"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                    </textView>
+                                    <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="06/12/2018" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="jwq-8l-RUJ">
+                                        <rect key="frame" x="204" y="12" width="131" height="30"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <nil key="textColor"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="date" translatesAutoresizingMaskIntoConstraints="NO" id="Fug-4e-7aF">
+                                        <rect key="frame" x="310" y="20" width="16" height="16"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    </imageView>
+                                </subviews>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
@@ -1236,7 +1260,7 @@
                             <constraint firstItem="v40-yB-5xJ" firstAttribute="leading" secondItem="AnK-wt-LVz" secondAttribute="leading" constant="16" id="YVR-w3-hFg"/>
                             <constraint firstItem="Sjw-Mt-qXf" firstAttribute="top" secondItem="h0d-Fw-ldQ" secondAttribute="bottom" constant="8" id="dx4-w7-BRN"/>
                             <constraint firstItem="BHV-zv-Zhm" firstAttribute="leading" secondItem="AnK-wt-LVz" secondAttribute="leading" id="eoW-MS-nM9"/>
-                            <constraint firstItem="v40-yB-5xJ" firstAttribute="top" secondItem="BHV-zv-Zhm" secondAttribute="bottom" constant="15" id="ilx-4o-fMV"/>
+                            <constraint firstItem="v40-yB-5xJ" firstAttribute="top" secondItem="BHV-zv-Zhm" secondAttribute="bottom" constant="70" id="ilx-4o-fMV"/>
                             <constraint firstItem="BHV-zv-Zhm" firstAttribute="trailing" secondItem="AnK-wt-LVz" secondAttribute="trailing" id="k2H-OP-hgQ"/>
                             <constraint firstItem="Itb-Oy-5wY" firstAttribute="bottom" secondItem="AnK-wt-LVz" secondAttribute="bottom" id="o1v-VK-muP"/>
                             <constraint firstItem="AnK-wt-LVz" firstAttribute="trailing" secondItem="Sjw-Mt-qXf" secondAttribute="trailing" constant="16" id="uxP-TK-8L7"/>
@@ -1244,6 +1268,7 @@
                         <viewLayoutGuide key="safeArea" id="AnK-wt-LVz"/>
                     </view>
                     <connections>
+                        <outlet property="dateTextField" destination="jwq-8l-RUJ" id="IOA-b3-FeP"/>
                         <outlet property="note_TextField" destination="Ed4-WC-tCE" id="cIT-Kc-jdZ"/>
                         <outlet property="tableView" destination="Sjw-Mt-qXf" id="px2-kN-B2H"/>
                         <outlet property="totalHoursBGView" destination="v40-yB-5xJ" id="6OO-z7-t22"/>
@@ -1417,6 +1442,7 @@
     <resources>
         <image name="button_bgshadow" width="130" height="40"/>
         <image name="crewtype_ic" width="36" height="36"/>
+        <image name="date" width="36" height="36"/>
         <image name="done_ic" width="36" height="36"/>
         <image name="finger_black" width="36" height="36"/>
         <image name="finger_bluebg" width="36" height="36"/>

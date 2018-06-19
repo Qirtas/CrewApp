@@ -22,6 +22,10 @@ class AddHoursViewController: UIViewController , CustomCrewTypeCellDelegate , Re
     @IBOutlet weak var totalNonProdHrzTextField: UILabel!
     
     @IBOutlet weak var note_TextField: UITextField!
+
+    @IBOutlet weak var dateTextField: UITextField!
+    let datePicker = UIDatePicker()
+    var logDate:String! = ""
     
     var loadingNotif:MBProgressHUD! = nil
 
@@ -88,6 +92,9 @@ class AddHoursViewController: UIViewController , CustomCrewTypeCellDelegate , Re
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         
         view.addGestureRecognizer(tap)
+        
+        setCurrentDateOnDatePicker()
+        createDatePicker()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -428,7 +435,7 @@ class AddHoursViewController: UIViewController , CustomCrewTypeCellDelegate , Re
             
             self.enteredNote = self.note_TextField.text
             
-            let waPostModel:WAPostModel = WAPostModel(GFId: Constants.UserID, WPCId: self.WPCircuitID, WAId: self.WorkAssignmentId, note: self.enteredNote!, crewInfo: crewList, tracedPaths: self.tracedPathsList, polygons: self.polygonsList, isTraceAll: self.isAllPathMode, isNoTrace: self.isNoTrace)
+            let waPostModel:WAPostModel = WAPostModel(GFId: Constants.UserID, WPCId: self.WPCircuitID, WAId: self.WorkAssignmentId, note: self.enteredNote!, crewInfo: crewList, tracedPaths: self.tracedPathsList, polygons: self.polygonsList, isTraceAll: self.isAllPathMode, isNoTrace: self.isNoTrace , logDate: self.logDate)
             
             let WAPostDict = waPostModel.createJson()
             print("\(Constants.TAG) WAPostDict \(WAPostDict)")
@@ -631,6 +638,52 @@ extension AddHoursViewController : UITableViewDelegate , UITableViewDataSource
     func networkNotAvailable()
     {
         isNetworkAvailable = false
+    }
+    
+    func createDatePicker()
+    {
+        let toolBar = UIToolbar()
+        toolBar.sizeToFit()
+        
+        let done = UIBarButtonItem(barButtonSystemItem: .done, target: nil, action: #selector(donePressed))
+        toolBar.setItems([done], animated: false)
+        
+        dateTextField.inputAccessoryView = toolBar
+        dateTextField.inputView = datePicker
+        
+        datePicker.datePickerMode = .date
+        
+    }
+    
+    func setCurrentDateOnDatePicker()
+    {
+        let date = Data()
+        let dateFormatterPrint = DateFormatter()
+        dateFormatterPrint.dateFormat = "MM/dd/yyyy"
+        let dateString = dateFormatterPrint.string(from: datePicker.date)
+
+        dateTextField.text = "\(dateString)"
+        self.logDate = "\(dateString)"
+        
+    }
+    
+    @objc func donePressed()
+    {
+        let formatter = DateFormatter()
+        
+        let dateFormatterGet = DateFormatter()
+        dateFormatterGet.dateFormat = "M/dd/yy"
+        
+        let dateFormatterPrint = DateFormatter()
+        dateFormatterPrint.dateFormat = "MM/dd/yyyy"
+
+        formatter.dateStyle = .short
+        formatter.timeStyle = .none
+        let dateString = dateFormatterPrint.string(from: datePicker.date)
+        
+        self.logDate = dateString
+        dateTextField.text = "\(dateString)"
+        self.view.endEditing(true)
     }
 }
 
